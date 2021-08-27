@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MOP.Order.API</name>
+    </assembly>
+    <members>
+        <member name="M:MOP.Order.API.Controllers.OrdersController.Get">
+            <summary>
+            Obtêm os pedidos
+            </summary>
+            <returns>Coleção de objetos da classe Pedidos</returns>                
+            <response code="200">Lista dos pedidos</response>        
+            <response code="400">Falha na requisição</response>         
+            <response code="404">Nenhum aluno foi localizado</response>         
+        </member>
+        <member name="M:MOP.Order.API.Controllers.OrdersController.GetAsync(System.Guid)">
+            <summary>
+            Obtêm as informações do pedido pelo seu Id
+            </summary>
+            <param name="id">Código do pedido</param>
+            <returns>Objetos da classe Pedido</returns>                
+            <response code="200">Informações do Pedido</response>
+            <response code="400">Falha na requisição</response>         
+            <response code="404">O aluno não foi localizado</response>         
+        </member>
+        <member name="M:MOP.Order.API.Controllers.OrdersController.PostAsync(MOP.Order.API.Application.Messages.Commands.OrderCommand.AddOrderCommand)">
+             <summary>
+             Grava o pedido
+             </summary>   
+             <remarks>
+             Exemplo request:
+            
+                 POST /Order
+                 {
+                     "customerId": "A9E5B222-313C-4AE2-8E04-809C3CFF4A80",
+                     "shipping": "FOB",
+                     "observation": "Cliente irá retirar na loja",
+                     "items": [
+                         {
+                             "productId": "BCE4F473-3DFA-4FB9-8E1E-5997951F5485",
+                             "quantity": 1,
+                             "unitPrice": 4500.00,
+                             "discount": 0,
+                             "discountValue": 200.00
+                         }
+                     ]                 
+                 }
+             </remarks>        
+             <returns>Retorna objeto criado da classe Pedido</returns>                
+             <response code="201">O pedido foi incluído corretamente</response>                
+             <response code="400">Falha na requisição</response>         
+        </member>
+    </members>
+</doc>
