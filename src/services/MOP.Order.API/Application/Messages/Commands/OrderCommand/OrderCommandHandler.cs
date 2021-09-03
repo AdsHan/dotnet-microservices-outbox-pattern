@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
 {
     public class OrderCommandHandler : CommandHandler,
-        IRequestHandler<AddOrderCommand, BaseResult>
+        IRequestHandler<CreateOrderCommand, BaseResult>,
+        IRequestHandler<UpdateOrderCommand, BaseResult>,
+        IRequestHandler<DeleteOrderCommand, BaseResult>
     {
         private readonly IMessageBusService _messageBusService;
         private readonly IOrderRepository _orderRepository;
@@ -31,7 +33,7 @@ namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
             _integrationEventLogRepository = integrationEventLogRepository;
         }
 
-        public async Task<BaseResult> Handle(AddOrderCommand command, CancellationToken cancellationToken)
+        public async Task<BaseResult> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
         {
             if (!command.Validate()) return command.BaseResult;
 
@@ -51,7 +53,6 @@ namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
             order.CalculateTotal();
 
             _orderRepository.Add(order);
-
 
             try
             {
@@ -74,5 +75,61 @@ namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
 
             return BaseResult;
         }
+
+        public async Task<BaseResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
+        {
+            if (!command.Validate()) return command.BaseResult;
+
+            var order = await _orderRepository.GetByIdAsync(command.Id);
+
+            if (order == null)
+            {
+                AddError("Não foi possível localizar o atendimento!");
+                return BaseResult;
+            }
+
+            order.Update(command.CustomerId, command.Shipping, command.Observation);
+
+            var newItems = command.Items.Select(i => new OrderItemModel(order.Id, i.ProductId, i.Quantity, i.UnitPrice, i.Discount, i.DiscountValue)).ToList();
+
+            order.UpdateItems(newItems);
+
+            order.CalculateTotal();
+
+            _orderRepository.Update(order);
+
+            try
+            {
+                await _orderRepository.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                AddError("Erro ao salvar o atendimento");
+            }
+
+            return BaseResult;
+        }
+
+        public async Task<BaseResult> Handle(DeleteOrderCommand command, CancellationToken cancellationToken)
+        {
+            if (!command.Validate()) return command.BaseResult;
+
+            var order = await _orderRepository.GetByIdAsync(command.Id);
+
+            if (order == null)
+            {
+                AddError("Não foi possível localizar o atendimento!");
+                return BaseResult;
+            }
+
+            order.Delete();
+
+            _orderRepository.Update(order);
+
+            await _orderRepository.SaveAsync();
+
+            return BaseResult;
+        }
+
     }
 }

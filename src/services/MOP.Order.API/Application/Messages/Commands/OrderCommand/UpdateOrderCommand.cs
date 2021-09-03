@@ -6,24 +6,28 @@ using System.Collections.Generic;
 
 namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
 {
-
-    public class AddOrderCommand : Command
+    public class UpdateOrderCommand : Command
     {
+        public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public ShippingType Shipping { get; set; }
         public string? Observation { get; set; }
-        public List<AddOrderItemCommand> Items { get; set; }
+        public List<UpdateOrderItemCommand> Items { get; set; }
 
         public override bool Validate()
         {
-            BaseResult.ValidationResult = new AddOrderValidation().Validate(this);
+            BaseResult.ValidationResult = new UpdateOrderValidation().Validate(this);
             return BaseResult.ValidationResult.IsValid;
         }
 
-        public class AddOrderValidation : AbstractValidator<AddOrderCommand>
+        public class UpdateOrderValidation : AbstractValidator<UpdateOrderCommand>
         {
-            public AddOrderValidation()
+            public UpdateOrderValidation()
             {
+                RuleFor(c => c.Id)
+                    .NotEmpty()
+                    .WithMessage("O código do pedido não foi informado");
+
                 RuleFor(c => c.CustomerId)
                     .NotEmpty()
                     .WithMessage("O código do cliente não foi informado");
@@ -52,7 +56,7 @@ namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
             }
         }
 
-        public class ItemsValidator : AbstractValidator<AddOrderItemCommand>
+        public class ItemsValidator : AbstractValidator<UpdateOrderItemCommand>
         {
             public ItemsValidator()
             {
@@ -81,7 +85,7 @@ namespace MOP.Order.API.Application.Messages.Commands.OrderCommand
         }
     }
 
-    public class AddOrderItemCommand
+    public class UpdateOrderItemCommand
     {
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }

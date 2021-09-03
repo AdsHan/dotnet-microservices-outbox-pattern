@@ -23,7 +23,7 @@
             <response code="400">Falha na requisição</response>         
             <response code="404">O aluno não foi localizado</response>         
         </member>
-        <member name="M:MOP.Order.API.Controllers.OrdersController.PostAsync(MOP.Order.API.Application.Messages.Commands.OrderCommand.AddOrderCommand)">
+        <member name="M:MOP.Order.API.Controllers.OrdersController.PostAsync(MOP.Order.API.Application.Messages.Commands.OrderCommand.CreateOrderCommand)">
              <summary>
              Grava o pedido
              </summary>   
@@ -49,6 +49,22 @@
              <returns>Retorna objeto criado da classe Pedido</returns>                
              <response code="201">O pedido foi incluído corretamente</response>                
              <response code="400">Falha na requisição</response>         
+        </member>
+        <member name="M:MOP.Order.API.Controllers.OrdersController.PutAsync(System.Guid,MOP.Order.API.Application.Messages.Commands.OrderCommand.UpdateOrderCommand)">
+            <summary>
+            Altera o pedido
+            </summary>        
+            <param name="id">Código do pedido</param>        
+            <response code="204">O pedido foi alterado corretamente</response>                
+            <response code="400">Falha na requisição</response>         
+        </member>
+        <member name="M:MOP.Order.API.Controllers.OrdersController.Delete(System.Guid)">
+            <summary>
+            Deleta o pedido pelo seu Id
+            </summary>        
+            <param name="id">Código do pedido</param>        
+            <response code="204">O pedido foi excluído corretamente</response>                
+            <response code="400">Falha na requisição</response>         
         </member>
     </members>
 </doc>

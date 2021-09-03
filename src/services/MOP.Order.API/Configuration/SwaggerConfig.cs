@@ -58,8 +58,11 @@ namespace MOP.Order.API.Configuration
         public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
-
+            app.UseSwaggerUI(c =>
+            {
+                c.DefaultModelsExpandDepth(-1);
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+            });
             return app;
         }
     }

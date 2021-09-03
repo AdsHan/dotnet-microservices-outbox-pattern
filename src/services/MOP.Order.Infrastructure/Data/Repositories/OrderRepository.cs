@@ -22,6 +22,7 @@ namespace MOP.Order.Infrastructure.Data.Repositories
         {
             return await _dbContext.Orders
                 .Where(a => a.Status == EntityStatusEnum.Active)
+                .Include(x => x.Items.Where(i => i.Status == EntityStatusEnum.Active))
                 .Include(x => x.Customer)
                 .AsNoTracking()
                 .ToListAsync();
@@ -31,6 +32,7 @@ namespace MOP.Order.Infrastructure.Data.Repositories
         {
             return await _dbContext.Orders
                 .Where(a => a.Status == EntityStatusEnum.Active)
+                .Include(x => x.Items.Where(i => i.Status == EntityStatusEnum.Active))
                 .Include(x => x.Customer)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -38,6 +40,12 @@ namespace MOP.Order.Infrastructure.Data.Repositories
 
         public void Update(OrderModel order)
         {
+            _dbContext.Entry(order).State = EntityState.Modified;
+            foreach (var item in order.Items)
+            {
+                //_dbContext.Entry(item).State = item.Id == Guid.Empty ? EntityState.Added : EntityState.Deleted;
+                _dbContext.Entry(item).State = item.Id == Guid.Empty ? EntityState.Added : EntityState.Modified;
+            }
             _dbContext.Update(order);
         }
 

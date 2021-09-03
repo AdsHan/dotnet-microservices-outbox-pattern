@@ -33,7 +33,7 @@ namespace MOP.Order.Domain.Entities
         public OrderModel Order { get; private set; }
         public ProductModel Product { get; private set; }
 
-        internal decimal CalculateTotal()
+        public decimal CalculateTotal()
         {
             var discount = CalculateTotalDiscount();
 
@@ -42,7 +42,7 @@ namespace MOP.Order.Domain.Entities
             return total < 0 ? 0 : total;
         }
 
-        public decimal CalculateTotalDiscount()
+        internal decimal CalculateTotalDiscount()
         {
             if (DiscountValue == 0) return 0;
 
@@ -57,6 +57,14 @@ namespace MOP.Order.Domain.Entities
                 discount = DiscountValue;
             }
             return discount;
+        }
+
+        public void Update(int quantity, decimal unitPrice, DiscountType discount, decimal discountValue)
+        {
+            Quantity = quantity;
+            UnitPrice = unitPrice;
+            Discount = discount;
+            DiscountValue = discountValue;
         }
     }
 }

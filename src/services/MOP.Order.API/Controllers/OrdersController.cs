@@ -96,11 +96,47 @@ namespace MOP.Order.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ActionName("NewOrder")]
-        public async Task<IActionResult> PostAsync([FromBody] AddOrderCommand command)
+        public async Task<IActionResult> PostAsync([FromBody] CreateOrderCommand command)
         {
             var result = await _mediator.SendCommand(command);
 
             return result.ValidationResult.IsValid ? CreatedAtAction("NewOrder", new { id = result.response }, command) : CustomResponse(result.ValidationResult);
+        }
+
+        // PUT: api/orders/5
+        /// <summary>
+        /// Altera o pedido
+        /// </summary>        
+        /// <param name="id">Código do pedido</param>        
+        /// <response code="204">O pedido foi alterado corretamente</response>                
+        /// <response code="400">Falha na requisição</response>         
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutAsync(Guid id, [FromBody] UpdateOrderCommand command)
+        {
+            var result = await _mediator.SendCommand(command);
+
+            return CustomResponse(result);
+        }
+
+        // DELETE: api/orders/5
+        /// <summary>
+        /// Deleta o pedido pelo seu Id
+        /// </summary>        
+        /// <param name="id">Código do pedido</param>        
+        /// <response code="204">O pedido foi excluído corretamente</response>                
+        /// <response code="400">Falha na requisição</response>         
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var command = new DeleteOrderCommand(id);
+
+            var result = await _mediator.SendCommand(command);
+
+            return CustomResponse(result);
         }
     }
 }

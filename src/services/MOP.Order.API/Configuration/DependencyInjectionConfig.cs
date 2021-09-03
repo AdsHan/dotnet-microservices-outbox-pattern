@@ -16,15 +16,15 @@ namespace MOP.Order.API.Configuration
         public static IServiceCollection AddDependencyConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             // Usando com banco de dados em memória
-            //services.AddDbContext<OrderDbContext>(options => options.UseInMemoryDatabase("OrdersOutbox"));
-            services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SQLServerCs")));
+            services.AddDbContext<OrderDbContext>(options => options.UseInMemoryDatabase("OrdersOutbox"));
+            //services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SQLServerCs")));
 
             services.AddScoped<IIntegrationEventLogRepository, IntegrationEventLogRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IMediatorHandler, MediatorHandler>();
 
-            services.AddMediatR(typeof(AddOrderCommand));
+            services.AddMediatR(typeof(CreateOrderCommand));
 
             return services;
         }
